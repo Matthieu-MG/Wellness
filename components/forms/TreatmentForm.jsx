@@ -12,8 +12,10 @@ function TreatmentForm() {
     const {control, register, handleSubmit, setValue} = useForm({
         defaultValues: {
             treatmentName: "",
-            medications: [{ name: "", dosage: "" }],
-            times:[{hour: "", minute: ""}]
+            medications: [{ name: "", dosage: "" , isAlternating: false}],
+            times:[{hour: "", minute: ""}],
+            frequency: '1',
+            days:[]
         }
     });
 
@@ -25,6 +27,11 @@ function TreatmentForm() {
       const { fields: times, append: addTime, remove: removeTime } = useFieldArray({
         control,
         name: "times"
+      });
+
+      const { fields: days, append: addDay, remove: removeDay } = useFieldArray({
+        control,
+        name: "days"
       });
 
     const onSubmit = useCallback(formData => {
@@ -81,7 +88,7 @@ function TreatmentForm() {
             {/* Dosing Frequency */}
             <SplitContainer direction="column" gap={0}>
                 <InterText isBold={true}>Dosing Frequency</InterText>
-                <DosingFrequencyForm/>
+                <DosingFrequencyForm setFieldValue={setValue} addDay={addDay} removeDay={removeDay}/>
             </SplitContainer>
 
             {/* Comments (Should be bold and multiline) */}

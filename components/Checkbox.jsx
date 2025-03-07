@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { TouchableOpacity, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet, View } from "react-native";
 
-function Checkbox({value=0, width='2', height='2', onPress}) {
+function Checkbox({value=0, width='2', height='auto', onPress}) {
     const [isChecked, setIsChecked] = useState(false);
 
     const Pressed = () => {
@@ -10,10 +10,14 @@ function Checkbox({value=0, width='2', height='2', onPress}) {
     }
 
     return (
-        <TouchableOpacity 
-            style={[styles.checkBox, {width: width, height: height, backgroundColor: isChecked ? 'orange' : '#00000000'}]}
-            onPress={Pressed}
-        />
+        <View style={{justifyContent: 'center', alignItems: 'center',
+         width: width, height: height,
+         aspectRatio: 1}}>  
+            <TouchableOpacity 
+                style={[styles.checkBox, {width: '50%', backgroundColor: isChecked ? 'orange' : '#00000000'}]}
+                onPress={Pressed}
+            />
+        </View>
     )
 }
 

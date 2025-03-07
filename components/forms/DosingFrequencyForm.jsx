@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import BouncyCheckbox from "react-native-bouncy-checkbox";
 import Checkbox from '../Checkbox';
 import SplitContainer from '../SplitContainer';
+import InterText from '../InterText';
 
 const data = [
   { label: 'Daily', value: '1' },
@@ -11,8 +11,16 @@ const data = [
   { label: 'Monthly', value: '3' }
 ];
 
-const DosingFrequencyForm = () => {
+const days = [
+    'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun' 
+]
+
+function DosingFrequencyForm({setFieldValue, addDay, removeDay}) {
   const [value, setValue] = useState(null);
+
+  const checkboxHandler = (checked, value) => {
+        checked ? addDay(value) : removeDay(value)
+  }
 
   return (
     <>
@@ -27,23 +35,40 @@ const DosingFrequencyForm = () => {
         placeholder="Daily"
         value={value}
         onChange={item => {
+            setFieldValue('frequency', item.value); // Set to field property
             setValue(item.value);
             }}
         />
 
-        <SplitContainer direction='row' wrap={true} gap={0} padding={0}>
+        <SplitContainer direction='row' wrap={true} gap={0} padding={0} alignItems='center'>
+            {/* Days header */}
+            {value != null && value != '1' && days.map((day, index) => {
+                return (
+                <View key={index} style={{
+                    width: `${100/7}%`,
+                    aspectRatio: 1,
+                    padding: 0,
+                    margin: 0,
+                    justifyContent: 'center'
+                }}>
+                    <InterText>{day}</InterText>
+                </View>
+                )
+            })}
+
+            {/* Days checkboxes */}
             {value === '2' && Array.from({length: 7}, (_, i) => {
                 return <Checkbox key={i}
                                  value={i + 1}
-                                 onPress={(checked, value) => console.log(`${value} is ${checked}`)}
+                                 onPress={(checked, value) => checkboxHandler(checked, value)}
                                  width={`${100/7}%`}
-                                 />
+                        />
             })}
 
             {value === '3' && Array.from({length: 28}, (_, i) => {
                 return <Checkbox key={i}
                                 value={i + 1}
-                                onPress={(checked, value) => console.log(`${value} is ${checked}`)}
+                                onPress={(checked, value) => checkboxHandler(checked, value)}
                                 width={`${100/7}%`}
                                 />
             })}
@@ -70,19 +95,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
-/*
-<SplitContainer direction='row' wrap={true} gap={0} padding={0}>
-    {value === '2' && Array.from({length: 7}, (_, i) => {
-        return <BouncyCheckbox key={i} 
-        style={{width: `${100/7}%`, aspectRatio: 1, padding: 0, margin: 0}}
-        disableText={true} onPress={(checked) => {console.log(checked)}}/>
-    })}
-
-    {value === '3' && Array.from({length: 28}, (_, i) => {
-        return <BouncyCheckbox key={i} disableText={true} onPress={(checked) => {console.log(checked)}}/>
-    })}
-</SplitContainer>
-*/
 
 export default DosingFrequencyForm;
