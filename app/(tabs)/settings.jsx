@@ -1,27 +1,13 @@
-import { Text, StyleSheet, View, SafeAreaView } from 'react-native';
-import { BlurView } from 'expo-blur';
+import { Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import TreatmentForm from '../../components/forms/TreatmentForm';
 
 export default function App() {
   const text = 'Hello, my container is blurring contents underneath!';
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.background}>
-        {[...Array(20).keys()].map(i => (
-          <View
-            key={`box-${i}`}
-            style={[styles.box, i % 2 === 1 ? styles.boxOdd : styles.boxEven]}
-          />
-        ))}
-      </View>
-      <BlurView intensity={70} tint="light" style={styles.card}>
-        <Text style={styles.text}>{text}</Text>
-      </BlurView>
-      <BlurView intensity={80} tint="light" style={styles.blurContainer}>
-        <Text style={styles.text}>{text}</Text>
-      </BlurView>
-      <BlurView intensity={90} tint="dark" style={styles.blurContainer}>
-        <Text style={[styles.text, { color: '#fff' }]}>{text}</Text>
-      </BlurView>
+      <ScrollView>
+        <TreatmentForm/>
+      </ScrollView>
     </SafeAreaView>
   );
 }

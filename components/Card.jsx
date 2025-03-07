@@ -1,21 +1,11 @@
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Inter_900Black, Inter_400Regular, useFonts } from "@expo-google-fonts/inter";
 
-function Card({header = "Card Header", body = "body", flex = 1, color = '#B2FF5F', isBlack=true, children}) {
-    const [loaded, error] = useFonts({Inter_900Black})
-    const [loaded1, error1] = useFonts({Inter_400Regular})
-
-    const textColor = isBlack ? styles.textBlack : styles.textWhite;
-
+function Card({flex = 1, color = '#B2FF5F',children}) {
     return (
-        <TouchableOpacity 
-        intensity={100} tint="light"
+        <TouchableOpacity
         style={[styles.card, {flex: flex, backgroundColor: color}]}>
-            <View style={{flexDirection: "row", gap:10, justifyContent:"center", alignContent:"center"}}>
-                {children}
-                {header != "" &&  <Text adjustsFontSizeToFit={true} style={[styles.text, styles.header, textColor]}>{header}</Text>}
-            </View>
-            {body != "" && <Text adjustsFontSizeToFit={true} style={[styles.text, styles.body, textColor]}>{body}</Text>}
+            {children}
         </TouchableOpacity>
     )
 }
@@ -29,8 +19,9 @@ const styles = StyleSheet.create( {
         borderRadius: 35,
         gap: 10,
         minHeight: 100,
+        maxHeight: 250,
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: "flex-start",
 
         borderWidth: 0,
         backgroundColor: '#B2FF5F',
