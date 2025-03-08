@@ -7,6 +7,7 @@ import MedicalForm from "./MedicalForm";
 import DosingScheduleForm from "./DosingScheduleForm";
 import { useCallback } from "react";
 import DosingFrequencyForm from "./DosingFrequencyForm";
+import CustomButton from "../CustomButton";
 
 function TreatmentForm() {
     const {control, register, handleSubmit, setValue} = useForm({
@@ -35,7 +36,7 @@ function TreatmentForm() {
       });
 
     const onSubmit = useCallback(formData => {
-        console.log(formData);
+        console.log("LOG: ", JSON.stringify(formData, null, 2));
     }, []);
 
     //! Handle Input form overflow-x
@@ -65,9 +66,15 @@ function TreatmentForm() {
             </View>
 
             {/* Add Medication Button */}
-            <Button
+            <CustomButton
                 title="Add Medication"
-                onPress={() => addMedication({ name: "", dosage: "" })}
+                isWhite={true}
+                textColorChange={false}
+                borderColor="#66BB6A"
+                pressedBorderColor="#388E3C"
+                backgroundColor="#66BB6A"
+                pressedColor="#388E3C"
+                onPress={() => addMedication({ name: "", dosage: "", isAlternating: false })}
             />
 
             {/* Dosage Schedule */}
@@ -79,23 +86,36 @@ function TreatmentForm() {
                 )}
             </View>
 
-            {/* Add Medication Button */}
-            <Button
+            {/* Add Time Button */}
+            <CustomButton
                 title="Add Time"
-                onPress={() => addTime({ hour: "", minute: "" })}
+                isWhite={true}
+                textColorChange={false}
+                borderColor="#66BB6A"
+                pressedBorderColor="#388E3C"
+                backgroundColor="#66BB6A"
+                pressedColor="#388E3C"
+                onPress={() => addMedication({ hour: "", minute: ""})}
             />
 
             {/* Dosing Frequency */}
             <SplitContainer direction="column" gap={0}>
                 <InterText isBold={true}>Dosing Frequency</InterText>
-                <DosingFrequencyForm setFieldValue={setValue} addDay={addDay} removeDay={removeDay}/>
+                <DosingFrequencyForm fieldArray={days} setFieldValue={setValue} addDay={addDay} removeDay={removeDay}/>
             </SplitContainer>
 
             {/* Comments (Should be bold and multiline) */}
             <FormInput label={'Comments (Optional)'}/>
 
             {/* Submit Button */}
-            <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+            <CustomButton title="Submit" onPress={handleSubmit(onSubmit)}
+                isWhite={true}
+                textColorChange={false}
+                borderColor="#42A5F5"
+                pressedBorderColor="#1976D2"
+                backgroundColor="#42A5F5"
+                pressedColor="#1976D2"
+            />
 
         </SplitContainer>
     );

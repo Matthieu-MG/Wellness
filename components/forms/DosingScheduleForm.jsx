@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useState } from "react";
 import InterText from "../InterText";
+import CustomButton from "../CustomButton";
 
 function DosingScheduleForm({index, setValue, remove}) {
     const [date, setDate] = useState(new Date());
@@ -47,7 +48,14 @@ function DosingScheduleForm({index, setValue, remove}) {
                 textColor="black"
                 onChange={onChange}
             />
-            <Button title="Remove" onPress={() => remove(index)}/>
+            <CustomButton title="Remove" onPress={() => remove(index)} 
+                backgroundColor="#EF5350"
+                isWhite={true}
+                textColorChange={false}
+                borderColor="#EF5350"   
+                pressedColor="#D32F2F" 
+                pressedBorderColor="#D32F2F"
+            />
         </>
     )
 }

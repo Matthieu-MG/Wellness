@@ -3,6 +3,8 @@ import SplitContainer from "../SplitContainer";
 import { Button } from "react-native";
 import Checkbox from "../Checkbox";
 import { useState } from "react";
+import InterText from "../InterText";
+import CustomButton from "../CustomButton";
 
 function MedicalForm({index, setValue, remove}) {
     const [isAlternating, setIsAlternating] = useState(false);
@@ -26,7 +28,11 @@ function MedicalForm({index, setValue, remove}) {
                 placeholder='2 x 500mg, 100ml, ...'
                 onChangeText={setValue}
             />
-            <Checkbox width={50} height={50} onPress={ (checked, value) => onCheck(checked, value) }/>
+
+            <SplitContainer direction="column" alignItems="center" gap={0}>
+                <InterText>Alternating Medicine</InterText>
+                <Checkbox width={50} height={50} onPress={ (checked, value) => onCheck(checked, value) }/>
+            </SplitContainer>
 
             {isAlternating && 
             <>
@@ -45,7 +51,14 @@ function MedicalForm({index, setValue, remove}) {
             </>
             }
             
-            <Button title="Remove" onPress={() => remove(index)} />
+            <CustomButton title="Remove" onPress={() => remove(index)} 
+                backgroundColor="#EF5350"
+                isWhite={true}
+                textColorChange={false}
+                borderColor="#EF5350"   
+                pressedColor="#D32F2F" 
+                pressedBorderColor="#D32F2F"
+            />
         </SplitContainer>
     )
 }

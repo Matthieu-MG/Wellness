@@ -1,7 +1,7 @@
 import { Inter_400Regular, Inter_900Black, useFonts } from "@expo-google-fonts/inter";
 import { Text, StyleSheet } from "react-native";
 
-function InterText({whiteText=false, isBold=false, isTitle=false, children}) {
+function InterText({whiteText=false, textColor=null, isBold=false, isTitle=false, padding=0, children}) {
     
     const [loaded, error] = isBold ? useFonts({Inter_900Black}) : useFonts({Inter_400Regular});
 
@@ -13,11 +13,14 @@ function InterText({whiteText=false, isBold=false, isTitle=false, children}) {
 
     const font = {
         fontFamily: isBold ? "Inter_900Black" : "Inter_400Black",
-        fontSize: isTitle ? 30 : 15
+        fontSize: isTitle ? 30 : 15,
+        padding: padding
     }
 
     return (
-        <Text style={[styles.text, whiteText ? styles.textWhite : styles.textBlack, font]}>
+        <Text style={[styles.text, whiteText ? styles.textWhite : styles.textBlack, font,
+                    textColor !== null ? {color: textColor} : null
+        ]}>
             {children}
         </Text>
     )

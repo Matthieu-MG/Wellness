@@ -15,11 +15,17 @@ const days = [
     'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun' 
 ]
 
-function DosingFrequencyForm({setFieldValue, addDay, removeDay}) {
+function DosingFrequencyForm({fieldArray=[], setFieldValue, addDay, removeDay}) {
   const [value, setValue] = useState(null);
 
   const checkboxHandler = (checked, value) => {
-        checked ? addDay(value) : removeDay(value)
+      if(checked) {
+        addDay({day: value})
+      }
+      else {
+        const index = fieldArray.findIndex(day => day.day === value)
+        index !== -1 ? removeDay(index) : console.log('ERROR (from DosingFrequencyForm): Could Not Find Index to Remove')
+      }
   }
 
   return (
