@@ -1,10 +1,11 @@
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
-import { Inter_900Black, Inter_400Regular, useFonts } from "@expo-google-fonts/inter";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-function Card({flex = 1, color = '#B2FF5F',children}) {
+function Card({flex = 1, color = '#DCEDC8', onPress, children}) {
     return (
         <TouchableOpacity
-        style={[styles.card, {flex: flex, backgroundColor: color}]}>
+        style={[styles.card, {backgroundColor: color}]}
+        onPress={onPress}
+        >
             {children}
         </TouchableOpacity>
     )
@@ -12,42 +13,15 @@ function Card({flex = 1, color = '#B2FF5F',children}) {
 
 const styles = StyleSheet.create( {
     card: {
-        flex: 0,
-        flexShrink: 1,
         width: "100%",
-        height: "auto",
-        borderRadius: 35,
+        borderRadius: 0,
         gap: 10,
-        minHeight: 100,
-        maxHeight: 250,
-        justifyContent: "center",
         alignItems: "flex-start",
 
-        borderWidth: 0,
+        borderWidth: 0.5,
         backgroundColor: '#B2FF5F',
-        boxShadow : "4 4 10 white"
+        boxShadow : "5 5 1 grey"
     },
-    text: {
-        textAlign: "center",
-        padding: 0,
-        fontFamily: "Inter_900Black",
-        fontSize: 30,
-    },
-    textBlack: {
-        color: '#050505'
-    },
-    textWhite: {
-        color: '#FFFFFF'
-    },
-    header : {
-        fontSize: 20,
-        fontWeight: "600"
-    },
-    body: {
-        fontSize: 15,
-        fontFamily: "Inter_400Regular",
-        fontWeight: "400"
-    }
 }
 );
 

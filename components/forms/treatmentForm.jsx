@@ -8,8 +8,12 @@ import DosingScheduleForm from "./DosingScheduleForm";
 import { useCallback } from "react";
 import DosingFrequencyForm from "./DosingFrequencyForm";
 import CustomButton from "../CustomButton";
+import { SerializeTreatment } from "../../utils/JSONSerializer";
+import { useRouter } from "expo-router";
 
 function TreatmentForm() {
+    const router = useRouter();
+
     const {control, register, handleSubmit, setValue} = useForm({
         defaultValues: {
             treatmentName: "",
@@ -35,11 +39,12 @@ function TreatmentForm() {
         name: "days"
       });
 
-    const onSubmit = useCallback(formData => {
-        console.log("LOG: ", JSON.stringify(formData, null, 2));
+    const onSubmit = useCallback(async formData => {
+        await SerializeTreatment(formData);
+        router.back();
     }, []);
 
-    //! Handle Input form overflow-x
+    //TODO Handle Input form overflow-x
     return(
         <SplitContainer direction="column" gap={10} padding={20}>
             <InterText isTitle={true} isBold={true}>Treatment Form</InterText>
@@ -95,7 +100,7 @@ function TreatmentForm() {
                 pressedBorderColor="#388E3C"
                 backgroundColor="#66BB6A"
                 pressedColor="#388E3C"
-                onPress={() => addMedication({ hour: "", minute: ""})}
+                onPress={() => addTime({ hour: "", minute: ""})}
             />
 
             {/* Dosing Frequency */}

@@ -1,8 +1,7 @@
 import { Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
-import TreatmentForm from '../../components/forms/TreatmentForm';
+import TreatmentForm from '../../components/forms/treatmentForm';
 
 export default function App() {
-  const text = 'Hello, my container is blurring contents underneath!';
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>

@@ -1,7 +1,7 @@
 import {View} from "react-native"
 
-function SplitContainer({flex=1, gap=30, padding=0, direction='row', wrap=false, 
-                         alignItems='flex-start', justifyContent = 'flex-start',children}) {
+function SplitContainer({flex, gap=30, padding=0, direction='row', wrap=false, 
+                         alignItems='flex-start', justifyContent = 'flex-start', children}) {
     return (
         <View flex={flex} style={{
             display: 'flex',

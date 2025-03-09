@@ -2,20 +2,18 @@ import { View, Image, StyleSheet } from "react-native";
 import { SafeAreaProvider,  SafeAreaView } from "react-native-safe-area-context";
 
 function AppContainer({children}) {
+    const backgroundUri = 'blurry-gradient-haikei(1).png'
+
     return (
         <SafeAreaProvider style={{height: "100%", width: "100%"}}>
             <SafeAreaView flex={1} style={{backgroundColor: "#F5F5F5", height: "100%", width:"100%"}}>
-            <View style={styles.background}>
-                <Image
-                style={[styles.background, {height: "100%", width: "100%"}]}
-                source={require('../assets/images/blob-scene-haikei(1).png')} />
-            </View>
     
             <View flex={1} style={{
                 padding: 20,
+                paddingBottom: 0,
                 marginTop: "5",
                 alignItems: 'flex-start',
-                gap: "1",
+                gap: "15",
                 width: "100%",
                 height: "100%"
             }}>
@@ -42,5 +40,13 @@ const styles = StyleSheet.create({
       right: 0
     }
   });
+
+/*
+    <View style={styles.background}>
+        <Image
+        style={[styles.background, {height: "100%", width: "100%"}]}
+        source={require('../assets/images/'+backgroundUri)} />
+    </View>
+*/
 
 export default AppContainer;
