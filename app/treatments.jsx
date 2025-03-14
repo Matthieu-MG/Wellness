@@ -30,14 +30,14 @@ function Treatments() {
     }, []); // Empty dependency array ensures this runs only once when the component mounts
 
     return (
-        <AppContainer>
+        <AppContainer color={'#4FC3F7'}>
             <SplitContainer direction="column" justifyContent="center">
-                <InterText isBold={true} isTitle={true}>Treatments</InterText>
+                <InterText whiteText={true} isBold={true} isTitle={true}>Treatments</InterText>
                 <ScrollView style={{
                                     display: 'flex',
                                     width: '100%',
                                     height:'100%',
-                                    backgroundColor: '#B2EBF2',
+                                    backgroundColor: '#F5F5F5',
                                     borderRadius: 5}}
                             contentContainerStyle={{padding: 20, alignItems:'center', gap:20}}
                 >

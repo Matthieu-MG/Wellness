@@ -18,6 +18,7 @@ function FormInput({label, name, placeholder, onChangeText}) {
 const styles = StyleSheet.create({
     input: {
         width: "100%",
+        maxWidth: 200,
         height: 40,
         borderWidth: 1,
         paddingHorizontal: 5,

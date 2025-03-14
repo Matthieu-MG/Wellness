@@ -1,12 +1,12 @@
 import { View, Image, StyleSheet } from "react-native";
 import { SafeAreaProvider,  SafeAreaView } from "react-native-safe-area-context";
 
-function AppContainer({children}) {
+function AppContainer({color='#F5F5F5', children}) {
     const backgroundUri = 'blurry-gradient-haikei(1).png'
 
     return (
         <SafeAreaProvider style={{height: "100%", width: "100%"}}>
-            <SafeAreaView flex={1} style={{backgroundColor: "#F5F5F5", height: "100%", width:"100%"}}>
+            <SafeAreaView flex={1} style={{backgroundColor: color, height: "100%", width:"100%"}}>
     
             <View flex={1} style={{
                 padding: 20,

@@ -1,11 +1,12 @@
 import { Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import TreatmentForm from '../../components/forms/treatmentForm';
+import ExerciseForm from '../../components/forms/ExerciseForm';
 
 export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <TreatmentForm/>
+        <ExerciseForm/>
       </ScrollView>
     </SafeAreaView>
   );

@@ -36,7 +36,7 @@ function ProgressCircle({ radius, strokeWidth, progress, color,}) {
           textAnchor="middle"
           alignmentBaseline="middle"
           fontSize={radius / 2.5}
-          fill={color}
+          fill={'white'}
           fontWeight="bold"
         >
           {progressValue}

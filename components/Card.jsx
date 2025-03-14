@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-function Card({flex = 1, color = '#DCEDC8', onPress, children}) {
+function Card({color = '#4FC3F7', onPress, children}) {
     return (
         <TouchableOpacity
         style={[styles.card, {backgroundColor: color}]}
@@ -14,7 +14,7 @@ function Card({flex = 1, color = '#DCEDC8', onPress, children}) {
 const styles = StyleSheet.create( {
     card: {
         width: "100%",
-        borderRadius: 0,
+        borderRadius: 10,
         gap: 10,
         alignItems: "flex-start",
 

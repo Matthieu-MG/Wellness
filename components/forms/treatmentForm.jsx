@@ -1,4 +1,4 @@
-import { StyleSheet, Button, View } from "react-native";
+import { View } from "react-native";
 import { useForm, useFieldArray } from "react-hook-form";
 import InterText from "../InterText";
 import SplitContainer from "../SplitContainer";
@@ -125,14 +125,5 @@ function TreatmentForm() {
         </SplitContainer>
     );
 }
-
-const styles = StyleSheet.create({
-    input: {
-        width: "100%",
-        height: 40,
-        borderWidth: 1,
-        paddingHorizontal: 5,
-    }
-})
 
 export default TreatmentForm;
