@@ -9,7 +9,7 @@ import Card from "./Card";
 import { GetExercises } from '../utils/DatabaseAccess'
 import Checkbox from "./Checkbox";
 
-function SearchExercise({onAdd = () => {}}) {
+function SearchExercise({onAdd = () => {}, displayAddButton=true}) {
     const [name, setName] = useState("");
     const [type, setType] = useState(-1);
     const [muscleGroup, setMuscleGroup] = useState(-1);
@@ -58,7 +58,6 @@ function SearchExercise({onAdd = () => {}}) {
         if(checked) {
             // Add id to array
             selectedExercises.push(value);
-            console.log(selectedExercises)
         }
         else {
             // find index and remove it from array
@@ -70,7 +69,7 @@ function SearchExercise({onAdd = () => {}}) {
     }
 
     return (
-        <>
+        <SplitContainer direction="column" gap={5}>
             <TextInput
                 style={styles.input}
                 placeholder={"Name"}
@@ -112,7 +111,7 @@ function SearchExercise({onAdd = () => {}}) {
 
             <CustomButton title={"Search"} onPress={onSearch}/>
 
-            <CustomButton title={"Add to Workout"} onPress={onAddToWorkout}/>
+            {displayAddButton && <CustomButton title={"Add to Workout"} onPress={onAddToWorkout}/> }
 
             <SplitContainer direction="column">
                 <InterText>Results: {searchResults.length}</InterText>
@@ -130,6 +129,7 @@ function SearchExercise({onAdd = () => {}}) {
                             <InterText fontSize={10}>{mapExerciseType(result.type)}</InterText>
                         </SplitContainer>
 
+                        {displayAddButton && 
                         <SplitContainer flex={1} direction="column" alignItems="center" gap={0}>
                             <InterText isBold={true}>Add</InterText>
                             <Checkbox
@@ -138,14 +138,14 @@ function SearchExercise({onAdd = () => {}}) {
                                 disabled={false}
                                 onPress={onResultChecked}
                             />
-                        </SplitContainer>
+                        </SplitContainer>}
 
                         </SplitContainer>
                     </Card>
                     )
                 })}
             </SplitContainer>
-        </>
+        </SplitContainer>
     )
 }
 

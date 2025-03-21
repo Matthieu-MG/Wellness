@@ -8,7 +8,7 @@ import IconButton from "../components/IconButton";
 import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
 
-import { DeserializeTreatment } from "../utils/JSONSerializer";
+import { DeserializeTreatment, DeleteTreatment } from "../utils/JSONSerializer";
 import TreatmentCard from "../components/treatmentCard";
 
 function Treatments() {
@@ -29,6 +29,15 @@ function Treatments() {
         loadData();
     }, []); // Empty dependency array ensures this runs only once when the component mounts
 
+    const deleteTreatment = (index) => {
+        const SetTreatmentsAsync = async () => {
+            const newTreatments = await DeleteTreatment([...treatments], index);
+            setTreatments(newTreatments);
+        }
+
+        SetTreatmentsAsync();
+    }
+
     return (
         <AppContainer color={'#4FC3F7'}>
             <SplitContainer direction="column" justifyContent="center">
@@ -48,7 +57,7 @@ function Treatments() {
                     {/* Renders every treatment */}
                     { treatments.length > 0 && treatments.map( (treatment, index) => {
                         return (
-                            <TreatmentCard key={index} treatment={treatment}/>
+                            <TreatmentCard key={treatment.treatmentName} treatment={treatment} deleteTreatment={() => deleteTreatment(index)}/>
                         )
                     })}
 

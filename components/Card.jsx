@@ -1,10 +1,11 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-function Card({color = '#4FC3F7', onPress, children}) {
+function Card({color = '#4FC3F7', opacity = 0.2, onPress, children}) {
     return (
         <TouchableOpacity
         style={[styles.card, {backgroundColor: color}]}
         onPress={onPress}
+        activeOpacity={opacity}
         >
             {children}
         </TouchableOpacity>

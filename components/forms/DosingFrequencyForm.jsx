@@ -16,7 +16,7 @@ const days = [
 ]
 
 function DosingFrequencyForm({fieldArray=[], setFieldValue, addDay, removeDay}) {
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(1);
 
   const checkboxHandler = (checked, value) => {
       if(checked) {

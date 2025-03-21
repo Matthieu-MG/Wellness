@@ -2,7 +2,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import FormInput from "./FormInput";
 import SplitContainer from "../SplitContainer";
 import SearchExercise from "../SearchExercise";
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { mapExerciseType, mapMuscle } from "../../utils/Exercises";
 import Card from "../Card";
 import InterText from "../InterText";
@@ -10,10 +10,9 @@ import Collapsible from "../Collapsible";
 import IconButton from "../IconButton";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CustomButton from "../CustomButton";
+import { AddWorkout } from "../../utils/DatabaseAccess";
 
-function WorkoutDayForm(props) {
-    const [exercisesUsed, setExercises] = useState([])
-
+function WorkoutDayForm() {
     // Days
     const {control, handleSubmit, setValue} = useForm({
         defaultValues: {
@@ -27,26 +26,33 @@ function WorkoutDayForm(props) {
         name: "exercises"
     })
 
-    const onAddExercises = (exercises) => {
-        
-        let arr = [...exercisesUsed, ...exercises];
-        // Ensures that no double exercise exists
-        arr = Array.from(new Map(arr.map( (exo) => [exo.id, exo] )).values());
+    const onAddExercises = (newExercises) => {
+        newExercises = newExercises
+        .filter(newExo => {
+                return !exercises.some(existingExo => {
+                    return existingExo.dbId === newExo.id 
+                })
+            }
+        )
+        .map(exo => ({...exo, dbId: exo.id, sets: 3, reps: 3, weight: "5kg"}));
 
-        let formArr = arr.map((exo) => ({id: exo.id, sets: 3, reps: 3, weight: "5kg"}))
-        console.log(formArr)
+        //* Note the use of dbId property above, this is to prevent conflicts with react-hook-form id property
+        //* This is useful when ensuring no duplicates is added
 
-        setValue("exercises", formArr)
-        setExercises(arr)
+        addExercise(newExercises);
     }
 
     const onRemoveExo = (index) => {
-        removeExercise(index)
-        setExercises(exercisesUsed.filter((_, i) => i !== index));
+        removeExercise(index);
     }
 
+    //* Remember to use dbId instead of id for the exercises primary key
     const onSubmit = useCallback(async formData => {
-        console.log(formData)
+        for (let i = 0; i < formData.exercises.length; i++) {
+            formData.exercises[i].id = formData.exercises[i].dbId;
+        }
+        console.log(`formData workout: ${JSON.stringify(formData, null, 2)}`)
+        AddWorkout(formData);
     }, []);
 
     return (
@@ -69,11 +75,11 @@ function WorkoutDayForm(props) {
             <Card>
                 <SplitContainer direction="column" padding={20} gap={10}>
                     <InterText isBold={true}>Exercises</InterText>
-                    {exercisesUsed.length === 0 && <InterText>No Exercise Yet</InterText>}
+                    {exercises.length === 0 && <InterText>No Exercise Yet</InterText>}
                     <SplitContainer direction="column" gap={0} padding={0}>
-                        { exercisesUsed.map( (exercise, index) => {
+                        { exercises.map( (exercise, index) => {
                                 return (
-                                    <Card key={index} color="white">
+                                    <Card key={exercise.id} color="white">
                                         <SplitContainer gap={0} padding={10}>
 
                                             <SplitContainer flex={1} direction="column" padding={0} gap={40}>

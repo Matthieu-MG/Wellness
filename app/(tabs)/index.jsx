@@ -65,24 +65,3 @@ export default function Index() {
     </AppContainer>
   );
 }
-
-/*
-  <Card>
-    <SplitContainer gap={0}>
-
-      <SplitContainer gap={5} direction='column' alignItems='center'>
-        <InterText isBold={true}>Energy</InterText>
-        <InterText >0/100</InterText>
-        <InterText isBold={true}>Steps</InterText>
-        <InterText >0/5000</InterText>
-        <InterText isBold={true}>Distance</InterText>
-        <InterText >0.1km</InterText>
-      </SplitContainer>
-
-      <SplitContainer gap={5} direction='column' alignItems='center'>
-        <ProgressCircle radius={60} strokeWidth={9} progress={0.8} color={'#FFAB40'}/>
-      </SplitContainer>
-
-    </SplitContainer>
-  </Card>
-*/

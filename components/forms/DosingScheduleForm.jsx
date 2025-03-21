@@ -8,6 +8,7 @@ import CustomButton from "../CustomButton";
 
 function DosingScheduleForm({index, setValue, remove}) {
     const [date, setDate] = useState(new Date());
+    console.log(`Date: ${JSON.stringify(date, null, 2)}`)
 
     const onChange = (event, inputDate) => {
         console.log(`${inputDate.getHours()}:${inputDate.getMinutes()}`)

@@ -26,7 +26,7 @@ function Collapsible({width = "100%", color = "white", title="Collapsible", chil
                     <SimpleLineIcons name="arrow-down" size={24} color="black"/>
                 </SplitContainer>
             </TouchableOpacity>
-            { !collapsed && children }
+            { collapsed && children }
         </Card>
     )
 }

@@ -164,6 +164,14 @@ function treatmentDetails() {
                                 }
                             </SplitContainer>
                         </Card>
+
+                        {treatment.hasFinishDate &&
+                        <Card color="#EEEEEE">
+                            <SplitContainer direction="column" gap={20} padding={20}>
+                                <InterText isBold={true}>Finish Date: {treatment.finishDate}</InterText>
+                            </SplitContainer>
+                        </Card>
+                        }
                     </SplitContainer>
                 </Card>
             }

@@ -28,7 +28,6 @@ const mapMuscle = (value) => {
     }
 }
 
-//TODO Catch TypeError
 const mapExerciseType = (value) => {
     try {
         const exoValue = parseInt(value);

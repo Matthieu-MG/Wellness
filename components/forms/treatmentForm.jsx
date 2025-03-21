@@ -5,14 +5,20 @@ import SplitContainer from "../SplitContainer";
 import FormInput from "./FormInput";
 import MedicalForm from "./MedicalForm";
 import DosingScheduleForm from "./DosingScheduleForm";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import DosingFrequencyForm from "./DosingFrequencyForm";
 import CustomButton from "../CustomButton";
 import { SerializeTreatment } from "../../utils/JSONSerializer";
+import { ValidateTreatment } from "../../utils/Validators";
 import { useRouter } from "expo-router";
+import Checkbox from "../Checkbox";
+import Card from "../Card"
+import { scheduleTreatmentNotifications } from "../../utils/Notifications";
 
 function TreatmentForm() {
     const router = useRouter();
+    const [hasFinishDate, setHasFinishDate] = useState(false);
+    const [errorMessages, setErrorMessages] = useState({messages: []});
 
     const {control, register, handleSubmit, setValue} = useForm({
         defaultValues: {
@@ -20,7 +26,9 @@ function TreatmentForm() {
             medications: [{ name: "", dosage: "" , isAlternating: false}],
             times:[{hour: "", minute: ""}],
             frequency: '1',
-            days:[]
+            days:[],
+            hasFinishDate: false,
+            finishDate: 'dd/mm/yyyy'
         }
     });
 
@@ -29,22 +37,40 @@ function TreatmentForm() {
         name: "medications"
       });
 
-      const { fields: times, append: addTime, remove: removeTime } = useFieldArray({
-        control,
-        name: "times"
-      });
+    const { fields: times, append: addTime, remove: removeTime } = useFieldArray({
+    control,
+    name: "times"
+    });
 
-      const { fields: days, append: addDay, remove: removeDay } = useFieldArray({
-        control,
-        name: "days"
-      });
+    const { fields: days, append: addDay, remove: removeDay } = useFieldArray({
+    control,
+    name: "days"
+    });
+
+    const onHasFinishDateChecked = (isChecked, value) => {
+        setValue('hasFinishDate', isChecked);
+        setHasFinishDate(isChecked);
+    }
 
     const onSubmit = useCallback(async formData => {
+        console.log("Submitting");
+        
+        const response = await ValidateTreatment(formData);
+        
+        if(response.error) {
+            console.log('Failed Validation');
+            
+            setErrorMessages(response.messages)
+            return;
+        }
+
         await SerializeTreatment(formData);
+        console.log("Going into Notifications");
+        await scheduleTreatmentNotifications(formData);
+        console.log("Routing Back");
         router.back();
     }, []);
 
-    //TODO Handle Input form overflow-x
     return(
         <SplitContainer direction="column" gap={10} padding={20}>
             <InterText isTitle={true} isBold={true}>Treatment Form</InterText>
@@ -109,8 +135,27 @@ function TreatmentForm() {
                 <DosingFrequencyForm fieldArray={days} setFieldValue={setValue} addDay={addDay} removeDay={removeDay}/>
             </SplitContainer>
 
-            {/* Comments (Should be bold and multiline) */}
-            <FormInput label={'Comments (Optional)'}/>
+            <SplitContainer direction="column" gap={0} padding={0}>
+                <InterText>Has a Finish Date ?</InterText>
+                <Checkbox width="15%" onPress={onHasFinishDateChecked}/>
+                {hasFinishDate && 
+                    <FormInput label={'Finish Date'} name={'finishDate'} placeholder={'dd/mm/yyyy'} onChangeText={setValue}/>
+                }
+            </SplitContainer>
+
+            {errorMessages.length > 0 && 
+            <Card color='#af0000'>
+                <SplitContainer direction="column" gap={5} padding={15}>
+                {errorMessages.map((message, index) => 
+                {
+                    return(
+                            <InterText whiteText={true} key={index}>{message}</InterText>
+                        )
+                    })
+                }
+                </SplitContainer>
+            </Card>
+            }
 
             {/* Submit Button */}
             <CustomButton title="Submit" onPress={handleSubmit(onSubmit)}

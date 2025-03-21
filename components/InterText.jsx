@@ -14,6 +14,7 @@ function InterText({whiteText=false, textColor=null, isBold=false, isTitle=false
     const font = {
         fontFamily: isBold ? "Inter_900Black" : "Inter_400Black",
         fontSize: isTitle ? 30 : fontSize,
+        textAlign: 'left',
         padding: padding
     }
 
