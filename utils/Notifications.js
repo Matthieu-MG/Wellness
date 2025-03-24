@@ -60,12 +60,15 @@ async function scheduleDailyTreatmentNotifications(times, name) {
     console.log("finished")
 }
 
-// TODO For weekly 1 = Sunday while currently 1 = Monday so we need to add 1 (2 to 8) , then mod 7 (0 to 6) add 1 again (1 [Sun] - 7 [Sat])
 async function scheduleMonthlyOrWeeklyTreatmentNotifications(times, days, frequency, name) {
 
     for (const [i, day] of days.entries()) {
 
-        const weekday = parseInt(day)
+        let weekday = parseInt(day)
+
+        if(frequency === 'weekly') {
+            weekday = (weekday % 7) + 1;
+        }
         
         for (const [j, time] of times.entries()) {
         
