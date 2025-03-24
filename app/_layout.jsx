@@ -2,11 +2,12 @@ import { Stack } from "expo-router";
 import { InitDb } from '../utils/DatabaseAccess'
 import { useEffect } from "react";
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { cancelScheduledNotifications } from "../utils/Notifications"
+import { cancelScheduledNotifications, getAllScheduledNotifications } from "../utils/Notifications"
 
 export default function RootLayout() {
   useEffect( () => {
     InitDb();
+    getAllScheduledNotifications();
   }, [])
 
   return (

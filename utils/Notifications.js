@@ -1,5 +1,5 @@
 import * as Notifications from 'expo-notifications'
-import { DAILY, WEEKLY, MONTHLY } from './Days';
+import { DAILY, WEEKLY, MONTHLY, frequency } from './Days';
 
 async function allowsNotificationsAsync() {
     const settings = await Notifications.getPermissionsAsync();
@@ -23,20 +23,24 @@ function getTreatmentNotificationId(name, i, time) {
     return `${name}-${i}-${time.hour}-${time.minute}`
 }
 
+//* Time should be an object {hour: number, minute: number}
+//* weekday should be a number (int) between 1-7
+function getTreatmentWeeklyNotificationId(name, i, j, time, weekday) {
+    return `${name}-${i}-${j}-${weekday}-${time.hour}-${time.minute}`
+}
+
 //* Times should be an array of objects : {hour: int, minute: int}
 async function scheduleDailyTreatmentNotifications(times, name) {
 
     for (const [i, time] of times.entries()) {
 
         console.log(`Scheduling Notification ${name}-${i}-${time.hour}-${time.minute}`);
-        console.log(`hour: ${typeof(time.hour)}`)
-        console.log(`minute: ${typeof(time.minute)}`)
 
         try {
 
             await Notifications.scheduleNotificationAsync({
                 content: {
-                    title: `Treatment ${name}`,
+                    title: `Treatment ~ ${name}`,
                     body: "Time for your meds!",
                 },
                 identifier: getTreatmentNotificationId(name, i, time),
@@ -56,22 +60,42 @@ async function scheduleDailyTreatmentNotifications(times, name) {
     console.log("finished")
 }
 
-// TODO --------------------------------------------------------------------------
-async function scheduleMonthlyOrWeeklyTreatmentNotifications(times, days, name) {
+// TODO For weekly 1 = Sunday while currently 1 = Monday so we need to add 1 (2 to 8) , then mod 7 (0 to 6) add 1 again (1 [Sun] - 7 [Sat])
+async function scheduleMonthlyOrWeeklyTreatmentNotifications(times, days, frequency, name) {
 
-    //* Loop over days array
-        //* Loop over times array
-            //* Set Notification id to be i*j or 'i-j' or idk ?
-        //* End Loop
-    //* End Loop
+    for (const [i, day] of days.entries()) {
 
-    //* Add additional logic to delete monthly or weekly treatment due to nested loop
+        const weekday = parseInt(day)
+        
+        for (const [j, time] of times.entries()) {
+        
+            console.log(`Scheduling Notification ${name}-${i}-${j}-${weekday}-${time.hour}-${time.minute}`);
+
+            try {
+                await Notifications.scheduleNotificationAsync({
+                    content: {
+                        title: `Treatment ~ ${name}`,
+                        body: "Time for your meds!",
+                    },
+                    identifier: getTreatmentWeeklyNotificationId(name, i, j, time, weekday),
+                    trigger: {
+                        type: frequency,
+                        hour: time.hour,
+                        minute: time.minute,
+                        ...(frequency === 'weekly' ? {weekday: weekday} : {day: weekday})
+                    },
+                });
+            }
+            catch (error) {
+                console.error('ERROR scheduling notification: ', error);
+            }
+        }   
+    }
 }
 
 async function scheduleTreatmentNotifications(treatment) {
 
     let settings = await allowsNotificationsAsync();
-    console.log(settings);
 
     if(!settings) {
         console.log("Doesn't authorize notifications")
@@ -88,19 +112,59 @@ async function scheduleTreatmentNotifications(treatment) {
         }),
     });
 
-    console.log(settings)
-
     const times = treatment.times;
-    console.log(times);
-    console.log(treatment.days)
+    const days = treatment.days.map(d => d.day);
+
 
     if(treatment.frequency === DAILY) {
-        console.log('daily');
         scheduleDailyTreatmentNotifications(times, treatment.treatmentName);
     }
     else {
-        //? Check days obj structure
-        console.log('not daily');
+        let frequency = 'weekly'
+        if(treatment.frequency === MONTHLY) {
+            frequency = 'monthly'
+        }
+
+        scheduleMonthlyOrWeeklyTreatmentNotifications(times, days, frequency, treatment.treatmentName);
+    }
+}
+
+async function removeDailyTreatmentNotifications(treatment) {
+    for (const [i, time] of treatment.times.entries()) {
+        
+        try {
+            console.log(await getAllScheduledNotifications())
+            await removeTreatmentNotifications(getTreatmentNotificationId(treatment.treatmentName, i, time))
+            console.log(await getAllScheduledNotifications())
+
+        }
+        catch (error) {
+            console.error('ERROR FROM removeDailyTreatmentNotifications -> Deleting notification: ', error);
+        }
+            
+    }
+}
+
+async function removeWeeklyOrMonthlyTreatmentNotifications(treatment) {
+    const days = treatment.days.map(d => d.day);
+    const times = treatment.times;
+    const name = treatment.treatmentName;
+
+    for (const [i, day] of days.entries()) {
+
+        const weekday = parseInt(day)
+        
+        for (const [j, time] of times.entries()) {
+        
+            console.log(`Deleting Notification ${name}-${i}-${j}-${weekday}-${time.hour}-${time.minute}`);
+
+            try {
+                await removeTreatmentNotifications(getTreatmentWeeklyNotificationId(treatment.treatmentName, i, j, time, weekday));
+            }
+            catch (error) {
+                console.error('ERROR FROM removeWeeklyOrMonthlyTreatmentNotifications -> Deleting weekly notification: ', error);
+            }
+        }   
     }
 }
 
@@ -114,7 +178,8 @@ async function cancelScheduledNotifications() {
 
 async function getAllScheduledNotifications() {
     try {
-        const notifs = Notifications.getAllScheduledNotificationsAsync();
+        const notifs = await Notifications.getAllScheduledNotificationsAsync();
+        console.log('ALL SCHEDULED NOTIFICATIONS: ', notifs);
         return notifs;
     }
     catch (error) {
@@ -124,4 +189,8 @@ async function getAllScheduledNotifications() {
     
 }
 
-export {cancelScheduledNotifications, removeTreatmentNotifications, scheduleTreatmentNotifications, getTreatmentNotificationId, getAllScheduledNotifications}
+export {cancelScheduledNotifications, removeTreatmentNotifications,
+        scheduleTreatmentNotifications, getTreatmentNotificationId, 
+        getAllScheduledNotifications, removeDailyTreatmentNotifications,
+        removeWeeklyOrMonthlyTreatmentNotifications
+    }

@@ -1,5 +1,6 @@
 import * as FileSystem from 'expo-file-system'
-import { getAllScheduledNotifications, getTreatmentNotificationId, removeTreatmentNotifications } from './Notifications';
+import { removeDailyTreatmentNotifications, removeWeeklyOrMonthlyTreatmentNotifications } from './Notifications';
+import { DAILY } from './Days';
 
 async function SerializeJSON(data, path) {
     
@@ -62,19 +63,13 @@ async function DeleteTreatment(treatments, index) {
         
         if(treatment.treatmentName === null || treatment.treatmentName.length < 0) return;
 
-            for (const [i, time] of treatment.times.entries()) {
-        
-                try {
-                    console.log(await getAllScheduledNotifications())
-                    await removeTreatmentNotifications(getTreatmentNotificationId(treatment.treatmentName, i, time))
-                    console.log(await getAllScheduledNotifications())
-
-                }
-                catch (error) {
-                    console.error('ERROR FROM DeleteTreatment (JSONSerializer.js) Deleting notification: ', error);
-                }
-                    
-            }
+        if(treatment.frequency === DAILY) {
+            removeDailyTreatmentNotifications(treatment);
+        }
+        else {
+            console.log("Removing W/M Notifications!")
+            removeWeeklyOrMonthlyTreatmentNotifications(treatment);
+        }
 
         treatments.splice(index, 1);
 
