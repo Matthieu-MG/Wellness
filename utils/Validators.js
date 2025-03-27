@@ -90,4 +90,34 @@ async function ValidateTreatment(treatment) {
     }
 }
 
-export {ValidateTreatment}
+// TODO Only allow pdf and images
+function ValidateMedicalRecord(record) {
+    let response = {
+        ok: false,
+        messages: []
+    }
+
+    try {
+
+        if(record.name === null || record.name.length === 0) {
+            response.messages.push("Name should not be empty");
+        }
+
+        if(record.uri === null || record.uri.length === 0) {
+            response.messages.push("A file should be selected");
+        }
+
+        if(response.messages.length === 0) {
+            response.ok = true;
+        }
+
+        return response;
+    }
+    catch (error) {
+        console.error("ERROR from ValidateMedicalRecord (Validators.js): ", error);
+        response.messages.push("Unexpected Error occured while Validating record");
+        return response;
+    }
+}
+
+export {ValidateTreatment, ValidateMedicalRecord}

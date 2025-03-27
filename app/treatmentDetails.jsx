@@ -155,9 +155,9 @@ function treatmentDetails() {
                                 {treatment.frequency !== 1 && treatment.days.length != 0 &&
                                     <SplitContainer direction="column" gap={0}>
                                         <SplitContainer gap={0}>
-                                            { RenderDaysHeaders(treatment.frequency) }
+                                                { RenderDaysHeaders(treatment.frequency) }
                                         </SplitContainer>
-                                        <SplitContainer gap={0}>
+                                        <SplitContainer wrap="wrap" gap={0}>
                                                 { RenderDays(treatment, treatmentDays) }
                                         </SplitContainer>
                                     </SplitContainer>

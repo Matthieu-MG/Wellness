@@ -1,4 +1,6 @@
 import * as SQLite from 'expo-sqlite'
+import { SerializeMedicalRecord } from './JSONSerializer';
+import { ValidateMedicalRecord } from '../utils/Validators';
 
 const db = SQLite.openDatabaseSync('Fitness');
 
@@ -26,6 +28,12 @@ const InitDb = async () => {
                 FOREIGN KEY (workoutId) REFERENCES Workouts(id),
                 FOREIGN KEY (exerciseId) REFERENCES Exercises(id),
                 PRIMARY KEY (workoutId, exerciseId)
+            );
+            CREATE TABLE IF NOT EXISTS MedicalRecords (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                name TEXT NOT NULL UNIQUE,
+                uri TEXT NOT NULL UNIQUE,
+                description TEXT
             );
         `);
     }
@@ -153,4 +161,70 @@ async function GetWorkoutExercises(id) {
     }
 }
 
-export {db, InitDb ,AddExercise, AddWorkout, GetExercises, GetWorkouts, GetWorkoutsByName, GetWorkoutExercises};
+async function AddMedicalRecord(record = {name:"BaseName", uri:"BaseUri", description:""}) {
+
+    console.log("Adding Medical Record: ", record.name);
+
+    let response = {
+        ok: true,
+        messages: []
+    }
+
+    const name = record.name;
+    const uri = record.uri;
+    const description = record.description;
+    
+    try {
+
+        response = ValidateMedicalRecord(record);
+
+        console.log("Response of ValidateMedicalRecord: ", response);
+
+        if(!response.ok) {
+            console.log(response.ok);
+            return response;
+        }
+
+        //* Replaces white spaces
+        const fileExtension = uri.split(".").pop();
+        const localURI = name.replace(/ /g, "_") + `.${fileExtension}`;
+        console.log("localURI: ", localURI);
+
+        //* Serialize File
+        if ( !(await SerializeMedicalRecord(uri, localURI)) ) {
+            response.ok = false;
+            response.messages.push("ERROR Saving the file picked");
+            return response;
+        }
+
+        //* Save in db
+        await db.runAsync('INSERT INTO MedicalRecords (name, uri, description) VALUES (?, ?, ?);',
+                           name, localURI, description
+                        );
+
+        return response;
+    }
+    catch (error) {
+        response.ok = false;
+        console.error("ERROR from AddMedicalRecord (DatabaseAccess.js): ", error);
+        
+        if(error.message.contains("UNIQUE constraint failed")) {
+            response.messages.push("Name and File URI should be unique!")
+        }
+        return response;
+    }
+}
+
+async function GetMedicalRecords() {
+    try {
+        return await db.getAllAsync('SELECT * FROM MedicalRecords');
+    }
+    catch (error) {
+        console.error("ERROR from GetMedicalRecords (DatabaseAccess.js): ", error);
+        return [];
+    }
+}
+
+export {db, InitDb ,AddExercise, AddWorkout, GetExercises, 
+        GetWorkouts, GetWorkoutsByName, GetWorkoutExercises,
+        AddMedicalRecord, GetMedicalRecords};

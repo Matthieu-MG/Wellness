@@ -3,37 +3,30 @@ import AppContainer from "../components/AppContainer";
 import Collapsible from "../components/Collapsible";
 import SearchWorkout from "../components/SearchWorkout"
 import SplitContainer from "../components/SplitContainer";
-import Card from "../components/Card";
 import InterText from "../components/InterText";
-import { useEffect, useState } from "react";
 import CustomButton from "../components/CustomButton";
-import { SerializeRoutine, DeserializeRoutine, createBaseRoutineArray } from "../utils/JSONSerializer";
+import { SerializeRoutine } from "../utils/JSONSerializer";
+import { useRoutineStore } from "../utils/GlobalStateManager";
 
 function workoutRoutine() {
     
-    const [days, setDays] = useState(createBaseRoutineArray());
-    
-    useEffect(() => {
-        const readRoutine = async () => {
-            const routine = await DeserializeRoutine();
-            setDays(routine);
-        }
-
-        readRoutine();
-    }, [])
+    // const [routine, setRoutine] = useState(createBaseRoutineArray());
+    const routine = useRoutineStore((state) => state.routine);
+    const loadRoutine = useRoutineStore((state) => state.loadRoutine);
 
     const bindWorkoutToDay = (day, id, name) => {
-        const newDays = [...days]
+        const newDays = [...routine]
         newDays[day].workoutId = id;
         newDays[day].workoutName = name;
 
-        setDays(newDays);
+        loadRoutine(newDays);
     }
 
     const updateRoutine = () => {
         //* Serialize days into JSON file
         const serialize = async () => {
-            await SerializeRoutine(days)
+            await SerializeRoutine(routine)
+            loadRoutine(routine);
         }
 
         serialize();
@@ -51,11 +44,11 @@ function workoutRoutine() {
                 <SplitContainer direction="column" padding={20} gap={20}>
 
                     <Collapsible title="Assign Workout" color="orange">
-                        <SearchWorkout data={days} Bind={bindWorkoutToDay}/>
+                        <SearchWorkout data={routine} Bind={bindWorkoutToDay}/>
                     </Collapsible>
 
                     <SplitContainer direction="column" gap={20}>
-                        {days.map((day, index) => {
+                        {routine.map((day, index) => {
                             return (
                                 <SplitContainer key={index} direction="row" gap={0}>
                                     <SplitContainer flex={1} direction="column" gap={0}>

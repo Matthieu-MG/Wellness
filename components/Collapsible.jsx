@@ -19,8 +19,8 @@ function Collapsible({width = "100%", color = "white", title="Collapsible", chil
     const collapsedPressed = () => setCollapsed(!collapsed);
     
     return(
-        <Card color={color}>
-            <TouchableOpacity style={touchableStyle} onPress={collapsedPressed}>
+        <Card color={color} opacity={1}>
+            <TouchableOpacity activeOpacity={1} style={touchableStyle} onPress={collapsedPressed}>
                 <SplitContainer padding={10} gap={0} justifyContent="space-around">
                     <InterText isBold={true}>{title}</InterText>
                     <SimpleLineIcons name="arrow-down" size={24} color="black"/>

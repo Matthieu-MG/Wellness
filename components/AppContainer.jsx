@@ -8,19 +8,19 @@ function AppContainer({color='#F5F5F5', children}) {
         <SafeAreaProvider style={{height: "100%", width: "100%"}}>
             <SafeAreaView flex={1} style={{backgroundColor: color, height: "100%", width:"100%"}}>
     
-            <View flex={1} style={{
-                padding: 20,
-                paddingBottom: 0,
-                marginTop: "5",
-                alignItems: 'flex-start',
-                gap: "15",
-                width: "100%",
-                height: "100%"
-            }}>
-                
-                {children}
-    
-            </View>
+                <View flex={1} style={{
+                    padding: 20,
+                    paddingBottom: 0,
+                    marginTop: "5",
+                    alignItems: 'flex-start',
+                    gap: "15",
+                    width: "100%",
+                    height: "100%"
+                }}>
+                    
+                    {children}
+        
+                </View>
             </SafeAreaView>
         </SafeAreaProvider>
     )

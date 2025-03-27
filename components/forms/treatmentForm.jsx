@@ -8,17 +8,19 @@ import DosingScheduleForm from "./DosingScheduleForm";
 import { useCallback, useState } from "react";
 import DosingFrequencyForm from "./DosingFrequencyForm";
 import CustomButton from "../CustomButton";
-import { SerializeTreatment } from "../../utils/JSONSerializer";
+import { DeserializeTreatment, SerializeTreatment } from "../../utils/JSONSerializer";
 import { ValidateTreatment } from "../../utils/Validators";
 import { useRouter } from "expo-router";
 import Checkbox from "../Checkbox";
 import Card from "../Card"
 import { scheduleTreatmentNotifications } from "../../utils/Notifications";
+import { useTreatmentsStore } from "../../utils/GlobalStateManager";
 
 function TreatmentForm() {
     const router = useRouter();
     const [hasFinishDate, setHasFinishDate] = useState(false);
     const [errorMessages, setErrorMessages] = useState({messages: []});
+    const loadTreatments = useTreatmentsStore((state) => (state.loadTreatments))
 
     const {control, register, handleSubmit, setValue} = useForm({
         defaultValues: {
@@ -65,9 +67,17 @@ function TreatmentForm() {
         }
 
         await SerializeTreatment(formData);
-        console.log("Going into Notifications");
         await scheduleTreatmentNotifications(formData);
-        console.log("Routing Back");
+
+        //* Could instead read treatments and add this treatment and then set that state
+        try {
+            const treatments = await DeserializeTreatment();
+            loadTreatments(treatments);
+        }
+        catch (error) {
+            console.error("Error occured trying to add new treatment: ", error);
+        }
+
         router.back();
     }, []);
 

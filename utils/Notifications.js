@@ -66,6 +66,7 @@ async function scheduleMonthlyOrWeeklyTreatmentNotifications(times, days, freque
 
         let weekday = parseInt(day)
 
+        //* Expo weekdays range from 1-7 [Sun - Sat]
         if(frequency === 'weekly') {
             weekday = (weekday % 7) + 1;
         }

@@ -10,29 +10,18 @@ import { useState, useEffect } from "react";
 
 import { DeserializeTreatment, DeleteTreatment } from "../utils/JSONSerializer";
 import TreatmentCard from "../components/treatmentCard";
+import { useTreatmentsStore } from "../utils/GlobalStateManager";
 
 function Treatments() {
 
-    const [treatments, setTreatments] = useState([]);
+    const treatments = useTreatmentsStore((state) => state.treatments);
+    const loadTreatments = useTreatmentsStore((state) => state.loadTreatments);
     const router = useRouter();
-
-    // Load treatments data asynchronously
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const data = await DeserializeTreatment('treatments.json');
-                setTreatments(data);
-            } catch (error) {
-                console.error("Error loading treatments:", error);
-            }
-        };
-        loadData();
-    }, []); // Empty dependency array ensures this runs only once when the component mounts
 
     const deleteTreatment = (index) => {
         const SetTreatmentsAsync = async () => {
             const newTreatments = await DeleteTreatment([...treatments], index);
-            setTreatments(newTreatments);
+            loadTreatments(newTreatments)
         }
 
         SetTreatmentsAsync();

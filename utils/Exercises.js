@@ -40,4 +40,15 @@ const mapExerciseType = (value) => {
     }
 }
 
-export {MuscleGroups, ExerciseType, mapMuscle, mapExerciseType};
+//* today should be an int being the weekday, routine is an array of workout objects
+const getWorkoutOfTheDay = (today, routine) => {
+    try {
+        const day = (today + 6) % 7;
+        return routine[day].workoutName;
+      }
+      catch (error) {
+        console.log("ERROR from getWorkoutOfTheDay (index.jsx): ", error);
+      }
+}
+
+export {MuscleGroups, ExerciseType, mapMuscle, mapExerciseType, getWorkoutOfTheDay};

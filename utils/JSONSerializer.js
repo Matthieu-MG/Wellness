@@ -2,15 +2,12 @@ import * as FileSystem from 'expo-file-system'
 import { removeDailyTreatmentNotifications, removeWeeklyOrMonthlyTreatmentNotifications } from './Notifications';
 import { DAILY } from './Days';
 
-async function SerializeJSON(data, path) {
-    
+async function SerializeJSON(data, path) {    
     const fileUri = FileSystem.documentDirectory + path;
     const jsonString  = JSON.stringify(data, null, 2);
 
     try {
-
         await FileSystem.writeAsStringAsync(fileUri, jsonString);
-    
     }
     catch (error) {
         console.log(error);
@@ -35,8 +32,8 @@ async function SerializeTreatment(data) {
     }
 }
 
-async function DeserializeTreatment(path) {
-    const fileUri = FileSystem.documentDirectory + path;
+async function DeserializeTreatment() {
+    const fileUri = FileSystem.documentDirectory + 'treatments.json';
 
     try {
         //* If no file exists there, or no array empty, then create array
@@ -108,8 +105,6 @@ async function DeserializeRoutine() {
     try {
         const fileContent = await FileSystem.readAsStringAsync(fileUri, { encoding: FileSystem.EncodingType.UTF8 })
         // TODO some validations check on routine array of objects
-
-        console.log("file content: ", fileContent);
         
         const routine = fileContent ? JSON.parse(fileContent) : createBaseRoutineArray();
 
@@ -121,6 +116,7 @@ async function DeserializeRoutine() {
     }
 }
 
+//* Workout Day
 const createDayObject = (day, value) => {
     return {
         label: day,
@@ -138,4 +134,64 @@ const createBaseRoutineArray = () => {
     ].map( (day, index) => createDayObject(day, index))
 }
 
-export {DeserializeTreatment, SerializeTreatment, DeleteTreatment, SerializeRoutine, DeserializeRoutine, createBaseRoutineArray}
+async function IsMedicalRecordsDirectoryCreated() {
+    const path = "MedicalRecords"
+    const uri = FileSystem.documentDirectory + path
+    
+    return (await FileSystem.getInfoAsync(uri)).exists
+}
+
+async function CreateMedicalRecordsDirectory() {
+    const path = "MedicalRecords"
+    const uri = FileSystem.documentDirectory + path
+
+    await FileSystem.makeDirectoryAsync(uri);
+}
+
+async function FetchMedicalRecords() {
+    const path = "MedicalRecords"
+    const uri = FileSystem.documentDirectory + path + "/"
+
+    try {
+        console.log(`medical records uri: `, uri);
+        return await FileSystem.readDirectoryAsync(uri);
+    }
+    catch (error) {
+        console.error("ERROR from FetchMedicalRecords (JSONSerializer.js) -> Fetching Medical Records of User: ", error);
+        return [];
+    }
+}
+
+async function SerializeMedicalRecord(uri="", fileName="file.pdf") {
+    try {
+        const path = FileSystem.documentDirectory + "MedicalRecords" + "/" + fileName;
+        await FileSystem.copyAsync({from: uri, to: path});
+        console.log("Copying from: ", uri);
+        console.log("To: ", path);
+
+        return true;
+    }
+    catch (error) {
+        console.error("ERROR from AddMedicalRecord (JSONSerializer.json): ", error);
+        return false;
+    }
+}
+
+function GetMedicalRecordUri(fileName) {
+    return FileSystem.documentDirectory + "MedicalRecords" + "/" + fileName;
+}
+
+async function ReadFileAsBase64(uri) {
+    try {
+        return await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+    }
+    catch (error) {
+        console.error("ERROR from ReadFileAsBase64 (JSONSerializer.js): ", error);
+    }
+}
+
+export { DeserializeTreatment, SerializeTreatment, DeleteTreatment,
+         SerializeRoutine, DeserializeRoutine, createBaseRoutineArray,
+         FetchMedicalRecords, IsMedicalRecordsDirectoryCreated, 
+         CreateMedicalRecordsDirectory, SerializeMedicalRecord, GetMedicalRecordUri,
+         ReadFileAsBase64 }

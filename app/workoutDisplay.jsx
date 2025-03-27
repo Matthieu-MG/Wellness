@@ -11,7 +11,7 @@ function workoutDisplay() {
     const [workouts, setWorkouts] = useState([])
 
     const workoutCardFactory = (workout, index) => {
-        const color = index % 2 === 0 ? 'orange' : 'red'
+        const color = index % 2 === 0 ? 'orange' : '#FF8300'
 
         const data = {
             id : workout.id,

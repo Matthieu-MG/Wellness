@@ -4,12 +4,13 @@ import InterText from "./InterText";
 function CustomButton({
       backgroundColor='white', pressedColor='black',
       borderColor='#050505', pressedBorderColor='#050505',
-      isWhite = false, textColorChange = true,
+      isWhite = false, textColorChange = true, padding = 0,
       title, onPress
     }) {
 
     return (
         <Pressable style={({pressed}) => [{
+                padding: padding,
                 backgroundColor: pressed ? pressedColor : backgroundColor,
                 borderColor: pressed ? pressedBorderColor : borderColor
             }, style.btn ]
