@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import Svg, { Circle, Text as SvgText } from 'react-native-svg';
 
-function ProgressCircle({ radius, strokeWidth, progress, color,}) {
+function ProgressCircle({ radius, strokeWidth, progress, color, maxValue=2000, value=0}) {
   const [circumference, setCircumference] = useState(0);
 
     if(progress > 1.0) {
@@ -15,7 +15,7 @@ function ProgressCircle({ radius, strokeWidth, progress, color,}) {
   }, [radius]);
 
   const strokeDashoffset = circumference * (1 - progress);
-  const progressValue = Math.round(progress * 2000); // Assuming progress is between 0 and 1 and total is 2000
+  const progressValue = Math.round(progress * maxValue); // Assuming progress is between 0 and 1 and total is 2000
 
   return (
     <View style={{ aspectRatio: 1, width: radius * 2 }}>
@@ -39,7 +39,7 @@ function ProgressCircle({ radius, strokeWidth, progress, color,}) {
           fill={'white'}
           fontWeight="bold"
         >
-          {progressValue}
+          {value === 0 ? progressValue : value}
         </SvgText>
       </Svg>
     </View>

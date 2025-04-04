@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { TouchableOpacity, StyleSheet, View } from "react-native";
 
-function Checkbox({value=0, defaultCheck=false, disabled=false, width='2', height='auto', onPress}) {
+function Checkbox({value=0, defaultCheck=false, disabled=false, width='2', height='auto', disableOnPress=false, onPress=()=>{}}) {
     const [isChecked, setIsChecked] = useState(defaultCheck);
+    const [isDisabled, setIsDisabled] = useState(false);
     
     const Pressed = () => {
         onPress(!isChecked, value)
         setIsChecked(!isChecked)
+
+        if(disableOnPress) {
+            setIsDisabled(true);
+        }
     }
 
     return (
@@ -14,7 +19,7 @@ function Checkbox({value=0, defaultCheck=false, disabled=false, width='2', heigh
          width: width, height: height,
          aspectRatio: 1}}>  
             <TouchableOpacity 
-                disabled={disabled}
+                disabled={disabled || isDisabled}
                 style={[styles.checkBox, {width: '50%', backgroundColor: isChecked ? 'orange' : '#00000000'}]}
                 onPress={Pressed}
             />

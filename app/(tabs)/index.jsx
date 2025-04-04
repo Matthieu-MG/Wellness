@@ -6,11 +6,15 @@ import ProgressCircle from '../../components/third_party/ProgressCircle';
 import {useRouter} from 'expo-router'
 import { DAILY, WEEKLY, getTodayHeader, getDayIndex, getDate } from '../../utils/Days';
 import { useRoutineStore, useTreatmentsStore } from '../../utils/GlobalStateManager';
+import { useEffect, useState } from 'react';
+import { IsPedometerAllowedAsync, GetStepsToday } from '../../utils/DeviceSteps'
 
 export default function Index() {
   const router = useRouter();
   const treatments = useTreatmentsStore((state) => state.treatments);
   const workout = useRoutineStore((state) => state.workout);
+  const [steps, setSteps] = useState(0);
+  const stepsGoal = 10000;
 
   const getAmountOfTreatmentsToday = () => {
     let counter = 0;
@@ -51,6 +55,27 @@ export default function Index() {
     return counter;
   }
 
+  useEffect(() => {
+    const setUserSteps = async () => {
+      try {
+
+        if(await IsPedometerAllowedAsync()) {
+          setSteps(await GetStepsToday());
+        }
+        else {
+          // Ensures steps stays at 0 is permission is denied
+          setSteps(0);
+        }
+        console.log(Math.min(steps/stepsGoal, 1.0));
+      }
+      catch (error) {
+        console.error("ERROR from setUserSteps (index.jsx): ", error);
+      }
+    }
+
+    setUserSteps();
+  }, []);
+
   return (
     <AppContainer>
 
@@ -68,13 +93,13 @@ export default function Index() {
                 <InterText whiteText={true} isBold={true}>Energy</InterText>
                 <InterText whiteText={true} >0/100</InterText>
                 <InterText whiteText={true} isBold={true}>Steps</InterText>
-                <InterText whiteText={true} >0/5000</InterText>
+                <InterText whiteText={true} >{`${steps}/${stepsGoal}`}</InterText>
                 <InterText whiteText={true} isBold={true}>Distance</InterText>
                 <InterText whiteText={true} >0.1km</InterText>
               </SplitContainer>
 
               <SplitContainer gap={5} flex={1} direction='column' alignItems='center'>
-                <ProgressCircle radius={60} strokeWidth={7} progress={0.8} color={'#FFCC80'}/>
+                <ProgressCircle radius={60} strokeWidth={7} progress={Math.min(steps/stepsGoal, 1.0)} color={'#FFCC80'} maxValue={stepsGoal} value={steps}/>
               </SplitContainer>
 
             </SplitContainer>

@@ -43,7 +43,7 @@ export default function Health() {
 
       <SplitContainer direction='column' gap={10}>
         <InterText isBold={true} isTitle={true}>Logs</InterText>
-        <Card onPress={() => {router.push('/workoutDisplay')}}>
+        <Card onPress={() => {router.push('/todayCheckIn')}}>
           <SplitContainer padding={30} direction='column' gap={5}>
             <InterText whiteText={true} isBold={true}>Check-in your treatments for the day!</InterText>
             <InterText whiteText={true} >Treatments left to check: 0</InterText>

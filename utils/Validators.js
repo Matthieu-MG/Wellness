@@ -107,6 +107,15 @@ function ValidateMedicalRecord(record) {
             response.messages.push("A file should be selected");
         }
 
+        const allowedMimeTypes = [
+            "application/pdf", "image/png", "image/jpeg", "image/heic"
+        ];        
+
+        if(!allowedMimeTypes.some((m) => record.mimeType === m)) {
+            response.messages.push('File should be an image(jpg, png or heic) OR a pdf');
+            console.log('not found correct mimeType');
+        }
+
         if(response.messages.length === 0) {
             response.ok = true;
         }

@@ -17,6 +17,7 @@ function MedicalRecordForm() {
     const {handleSubmit, setValue} = useForm({defaultValues: {
         name: "BaseName",
         uri: "BaseURI",
+        mimeType: "",
         description: ""
     }})
 
@@ -25,8 +26,7 @@ function MedicalRecordForm() {
             const result = await DocumentPicker.getDocumentAsync();
             if(!result.canceled) {
                 setValue("uri", result.assets[0].uri);
-                console.log(result.assets[0].name);
-                console.log(result.assets[0].uri);
+                setValue("mimeType", result.assets[0].mimeType);
             }
         }
 
@@ -84,7 +84,7 @@ function MedicalRecordForm() {
 
             { errors.length !== 0 && 
                 <Card color="red">
-                    <SplitContainer gap={0} padding={10}>
+                    <SplitContainer gap={10} padding={10} direction="column">
                         { errors.map((e, index) => <InterText key={index} whiteText={true} >{e}</InterText>) }
                     </SplitContainer>
                 </Card>
